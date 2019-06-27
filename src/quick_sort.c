@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+//test
 // 素数
 #define N 2999
 

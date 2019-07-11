@@ -32,15 +32,21 @@ int quick_select(int A[], int n, int k){
   else return quick_select(A+1, j-1, k);
 }
 
+int X[N];
+
 int m(int A[],int n){//median_of_medianのpivotを求める補助関数
     if (n > 5) {
-        int X[n/5];
         int i;
-        for(i = 0;i < (n/5)-1;i++){
-            int Z[5] = {A[5*i],A[5*i+1],A[5*i+2],A[5*i+3],A[5*i+4]};
-            X[i] = quick_select(Z,5,3);//中央値をquick_selectを用いて求める(他にいい方法があれば知りたいです)
+        for(i = 0;i < (n/5);i++){
+            X[i] = quick_select(A+5*i,5,2);//中央値をquick_selectを用いて求める(他にいい方法があれば知りたいです)
         }
-        return m(X,n/5);
+        if (n%5 == 0){
+            return m(X,n/5);
+        }
+        else{
+            X[n/5] = m(A+5*(n/5),n - 5*(n/5));
+            return m(X,n/5+1);
+        }
     }
     else if (n % 2 == 1){
         return quick_select(A,n,n/2+1);
@@ -82,6 +88,9 @@ int main(){
   for(i=2;i<N;i++){
     A[i] = (long long int) A[i-1] * A[1] % N;
   }
+  
+  
+  
   for(i=0;i<N;i++){
     if(median_of_median(A, N, i) != i) printf("ERROR %d %d\n", i, median_of_median(A, N, i));
 //    printf("%d th element is %d\n", i, quick_select(A, N, i));

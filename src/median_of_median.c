@@ -14,45 +14,52 @@ void swap(int *p, int *q){
 }
 
 int quick_select(int A[], int n, int k){
-  int i, j, pivot;
+  int i, j,l, pivot;
 
 // 真ん中の要素をピボットとする
   pivot = A[n/2];
   A[n/2] = A[0];
   A[0] = pivot;
-  for(i = j = 1; i < n; i++){
-    if(A[i] <= pivot){
-      swap(A+i, A+j);
-      j++;
+  for(j = 0, i = l = 1; i < n ; i++){
+    if(A[i] < pivot){
+        swap(A+i,A+l);
+        swap(A+l,A+j);
+        j++;
+        l++;
     }
-  }
-
-  if(j == k+1) return pivot;
-  else if(j < k+1) return quick_select(A+j, n-j, k-j);
-  else return quick_select(A+1, j-1, k);
+    else if (A[i] == pivot){
+        swap(A+l,A+i);
+        l++;
+    }
 }
 
-int X[N];
+if(j <= k && k <= l-1) return pivot;
+else if(l <= k) return quick_select(A+l, n-l, k-l);
+else return quick_select(A, j, k);
+}
+
+
 
 int m(int A[],int n){//median_of_medianのpivotを求める補助関数
+    int X[N];
     if (n > 5) {
         int i;
         for(i = 0;i < (n/5);i++){
-            X[i] = quick_select(A+5*i,5,2);//中央値をquick_selectを用いて求める(他にいい方法があれば知りたいです)
+            X[i] = quick_select(A+5*i,5,2);//中央値をquick_selectを用いて求める
         }
         if (n%5 == 0){
-            return m(X,n/5);
+            return quick_select(X,n/5,(n/5)/2);
         }
         else{
             X[n/5] = m(A+5*(n/5),n - 5*(n/5));
-            return m(X,n/5+1);
+            return quick_select(X,n/5+1,(n/5+1)/2);
         }
     }
     else if (n % 2 == 1){
-        return quick_select(A,n,n/2+1);
+        return quick_select(A,n,n/2);
     }
     else{
-        return quick_select(A,n,n/2)+quick_select(A,n,n/2+1)/2;
+        return quick_select(A,n,n/2);
     }
 }
 
@@ -74,8 +81,8 @@ int median_of_median(int A[],int n,int k){
         }
     }
     if(j <= k && k <= l-1) return pivot;
-    else if(l <= k) return quick_select(A+l, n-l, k-l);
-    else return quick_select(A, j, k);
+    else if(l <= k) return median_of_median(A+l, n-l, k-l);
+    else return median_of_median(A, j, k);
 }
 
 

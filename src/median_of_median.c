@@ -48,17 +48,14 @@ int m(int A[],int n){//median_of_medianのpivotを求める補助関数
             X[i] = quick_select(A+5*i,5,2);//中央値をquick_selectを用いて求める
         }
         if (n%5 == 0){
-            return quick_select(X,n/5,(n/5)/2);
+            return m(X,n/5);
         }
         else{
-            X[n/5] = m(A+5*(n/5),n - 5*(n/5));
-            return quick_select(X,n/5+1,(n/5+1)/2);
+            X[n/5] = m(A+(n - (n%5)),n%5);
+            return m(X,n/5+1);
         }
     }
-    else if (n % 2 == 1){
-        return quick_select(A,n,n/2);
-    }
-    else{
+    else {
         return quick_select(A,n,n/2);
     }
 }

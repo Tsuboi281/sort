@@ -63,25 +63,39 @@ int m(int A[],int n){//median_of_medianのpivotを求める補助関数
 
 
 int median_of_median(int A[],int n,int k){
-    int i,j,l,pivot;
-    pivot = m(A,n);
-    for(i = j = l = 0;i < n;i++){
-        if (A[i] < pivot){
-            swap(A+i,A+l);
-            swap(A+l,A+j);
-            j++;
-            l++;
+    if (n <= 5) return quick_select(A,n,k);
+    else {
+        int i;
+        int X[N];
+        for(i = 0;i < (n/5);i++){
+            X[i] = quick_select(A+5*i,5,2);
         }
-        else if (A[i] == pivot){
-            swap(A+l,A+i);
-            l++;
+        int pivot;
+        if (n%5 == 0){
+            pivot = median_of_median(X,n/5,(n/5)/2);
         }
+        else {
+            X[n/5] = quick_select(A+(n - (n%5)),n%5,(n%5)/2);
+            pivot = median_of_median(X,n/5+1,(n/5+1)/2);
+        }
+        int j, l;
+        for(i = j = l = 0;i < n;i++){
+             if (A[i] < pivot){
+                swap(A+i,A+l);
+                swap(A+l,A+j);
+                j++;
+                l++;
+            }
+            else  if (A[i] == pivot){
+                swap(A+l,A+i);
+                l++;
+            }
+        }
+        if(j <= k && k <= l-1) return pivot;
+        else if(l <= k) return median_of_median(A+l, n-l, k-l);
+        else return median_of_median(A, j, k);
     }
-    if(j <= k && k <= l-1) return pivot;
-    else if(l <= k) return median_of_median(A+l, n-l, k-l);
-    else return median_of_median(A, j, k);
 }
-
 
 
 
